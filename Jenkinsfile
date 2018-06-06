@@ -28,20 +28,14 @@ pipeline {
             }
         }
 
-        stage('Prepare environment') {
-            steps {
-                script {
-                    sh(returnStdout: true, script: 'python3.6 -m venv env')
-                    sh(returnStdout: true, script: 'source env/bin/activate')
-                    sh(returnStdout: true, script: 'pip install -e .')
-                }
-            }
-        }
-
         stage('Unit tests') {
             steps {
-                script {
-                    sh 'python3 manage.py unit_tests --clean'
+                withPythonEnv('python3.5') {
+                    script {
+                        pysh 'pip3 install -r requirements.txt'
+                        pysh 'pip install -e .'
+                        sh 'python3.5 test_all.py'
+                    }
                 }
             }
         }
@@ -57,9 +51,13 @@ pipeline {
         stage('Secret Review') {
             steps {
                 script {
-                    env.secretReview = sh(returnStdout: true, script: "trufflehog --regex ${env.gitCommit}").trim()
+                    sh('pip3 install -e .')
+                    echo "---BEGIN---"
+                    catchError {
+                        sh("trufflehog --json --regex ${env.giturl}")
+                    }
+                    echo "---END---"
                 }
-                echo "Secret REVIEW: ${env.secretReview}"
             }
         }
 
@@ -87,5 +85,21 @@ pipeline {
             }
         }
 
+    }
+
+    post {
+        failure {
+            echo 'FAILURE'
+        }
+        unstable {
+            echo 'UNSTABLE'
+        }
+        success {
+            echo 'SUCCESS'
+        }
+        always {
+            echo '#### CLEANNING K8S SLAVE ####'
+            sh ('pip3 uninstall -r requirements.txt')
+        }
     }
 }
