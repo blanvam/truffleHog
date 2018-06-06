@@ -43,7 +43,7 @@ pipeline {
         stage('Functional tests') {
             steps {
                 script {
-                    sh 'echo "RUN YOUR FUNCTIONAL TEST"'
+                    echo "RUN YOUR FUNCTIONAL TEST"
                 }
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Code Review Analyzer') {
             steps{
                 script {
-                  sh 'echo "SEND REVIEW NOTIFICATION"'
+                  echo "SEND REVIEW NOTIFICATION"
                 }
             }
         }
@@ -72,7 +72,7 @@ pipeline {
         stage('Generate and PUSH image to Regitry') {
             steps {
                 script {
-                    sh 'echo "GENERATE YOUR IMAGE FROM YOUR CODE AND PUSH"'
+                    echo "GENERATE YOUR IMAGE FROM YOUR CODE AND PUSH"
                 }
             }
         }
@@ -80,7 +80,7 @@ pipeline {
         stage('Image Review') {
             steps {
                 script {
-                    sh 'echo "Image Review"'
+                    echo "Image Review"
                 }
             }
         }
