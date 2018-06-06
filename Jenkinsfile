@@ -98,8 +98,7 @@ pipeline {
             echo 'SUCCESS'
         }
         always {
-            echo '#### CLEANNING K8S SLAVE ####'
-            sh ('pip3 uninstall -r requirements.txt')
+            echo '#### CLEANNING ####'
         }
     }
 }
